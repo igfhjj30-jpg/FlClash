@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/netip"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -34,8 +35,12 @@ var (
 )
 
 type TunHandler struct {
-	listener *sing_tun.Listener
-	callback unsafe.Pointer
+	listener   *sing_tun.Listener
+	callback   unsafe.Pointer
+	packet     *packetTunnel
+	packetFD   *packetFileTun
+	packetMode bool
+	closing    bool
 
 	mu sync.RWMutex
 }
@@ -68,20 +73,36 @@ func (th *TunHandler) start(fd int, stack, address, dns string) bool {
 
 func (th *TunHandler) close() {
 	th.mu.Lock()
-	defer th.mu.Unlock()
+	th.closing = true
+	listener, packet, packetFD := th.listener, th.packet, th.packetFD
+	th.mu.Unlock()
+	if packet != nil {
+		packet.Close()
+		if activePacketTunnel.CompareAndSwap(packet, nil) {
+			bumpRouteEpoch()
+		}
+	}
+	if packetFD != nil {
+		_ = packetFD.Close()
+	}
+	if listener != nil {
+		_ = listener.Close()
+	}
+	th.mu.Lock()
 	th.clear()
+	th.mu.Unlock()
 }
 
 func (th *TunHandler) clear() {
 	th.removeHook()
-	if th.listener != nil {
-		_ = th.listener.Close()
-	}
 	if th.callback != nil {
 		releaseObject(th.callback)
 	}
 	th.callback = nil
 	th.listener = nil
+	th.packet = nil
+	th.packetFD = nil
+	th.packetMode = false
 }
 
 // protectFailing tracks whether the last protect call was refused, so a stuck
@@ -92,7 +113,7 @@ func (th *TunHandler) handleProtect(fd int) error {
 	th.mu.RLock()
 	defer th.mu.RUnlock()
 
-	if th.listener == nil || th.callback == nil {
+	if th.closing || (th.listener == nil && !th.packetMode) || th.callback == nil {
 		// The tun routes are already live at this point (Android establishes
 		// them before it hands the fd over), so an unprotected socket would be
 		// routed straight back into the tunnel and hang until it times out.
@@ -240,6 +261,44 @@ func handleStartTun(callback unsafe.Pointer, fd int, stack, address, dns string)
 	return false
 }
 
+func handleStartPacketTunnel(callback unsafe.Pointer, fd int, configuration string) bool {
+	tunLock.Lock()
+	defer tunLock.Unlock()
+	stopTunLocked()
+	config := packetTunnelConfig{}
+	if err := json.Unmarshal([]byte(configuration), &config); err != nil || config.validate() != nil || fd <= 0 {
+		if fd > 0 {
+			_ = syscall.Close(fd)
+		}
+		if callback != nil {
+			releaseObject(callback)
+		}
+		return false
+	}
+	file, err := newPacketFileTun(fd, config.MTU)
+	if err != nil {
+		_ = syscall.Close(fd)
+		releaseObject(callback)
+		return false
+	}
+	th := &TunHandler{callback: callback, packetFD: file, packetMode: true}
+	tunHandler = th
+	th.initHook()
+	endpoint, _ := netip.ParseAddrPort(config.Endpoint)
+	dialer := packetTunnelDialer{proxyName: config.TransportProxy, endpoint: endpoint, lookup: packetTunnelProxy}
+	packet, err := newPacketTunnel(file, config, dialer)
+	if err != nil {
+		stopTunLocked()
+		return false
+	}
+	th.mu.Lock()
+	th.packet = packet
+	th.mu.Unlock()
+	activePacketTunnel.Store(packet)
+	bumpRouteEpoch()
+	return true
+}
+
 var (
 	dnsUpdateMu  sync.Mutex
 	dnsUpdateSeq atomic.Uint64
@@ -300,12 +359,37 @@ func startTUN(callback unsafe.Pointer, fd C.int, stackChar, addressChar, dnsChar
 	if !started {
 		return false
 	}
+	configMu.Lock()
+	updateListeners(currentConfig)
+	configMu.Unlock()
 	if !isRunning.Load() {
 		handleStartListener()
 	} else {
 		handleResetConnections()
 	}
 	return true
+}
+
+//export startPacketTUN
+func startPacketTUN(callback unsafe.Pointer, fd C.int, configChar *C.char) (started bool) {
+	configuration := takeCString(configChar)
+	defer func() {
+		if recover() != nil {
+			handleStopTun()
+			started = false
+		}
+	}()
+	return handleStartPacketTunnel(callback, int(fd), configuration)
+}
+
+//export getPacketTunnelStatus
+func getPacketTunnelStatus() *C.char {
+	return C.CString(marshalResult(activePacketTunnel.Load().status()))
+}
+
+//export setPacketTunnelMode
+func setPacketTunnelMode(enabled bool) {
+	handlePacketTunnelMode(enabled)
 }
 
 //export quickSetup

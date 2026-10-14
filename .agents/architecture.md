@@ -40,6 +40,19 @@ Key Go core files:
 - `core/lib.go`: CGO exports.
 - `core/server.go`: desktop socket/named-pipe client and framed message forwarding.
 
+### Android complete packet tunnel
+
+`VpnOptions.fullTunnel` selects an opt-in raw packet path. `ServiceState` still
+owns start/stop intent and applies the desired packet mode to Core when shared
+configuration is synchronized, including before VPN startup. `VpnService` installs both default routes without app exclusions,
+HTTP proxy, or bypass; `core/packet_tunnel.go` passes IPv4 packets from the owned
+descriptor to WireGuard and discards IPv6. Only encrypted peer datagrams enter
+the selected concrete Mihomo proxy. The normal sing-tun network stack is unused.
+The desired-mode guard keeps proxy data listeners closed even during a peer
+outage or profile reload. Status providers only observe native state. Always-on
+and lockdown remain Android system settings; see [FULL_TUNNEL.md](../FULL_TUNNEL.md).
+
+
 ## DNS Override
 
 `PatchClashConfig.dns` holds a full `Dns` model, but only the keys listed in `dnsOverrideKeys` reach a profile.

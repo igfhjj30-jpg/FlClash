@@ -15,6 +15,23 @@ object Core {
 
     external fun forceGC()
 
+    private external fun startPacketTunnel(fd: Int, cb: TunInterface, configuration: String): Boolean
+
+    external fun getPacketTunnelStatus(): String
+
+    external fun setPacketTunnelMode(enabled: Boolean)
+
+    fun startPacketTunnel(fd: Int, protect: (Int) -> Boolean, configuration: String): Boolean =
+        startPacketTunnel(
+            fd,
+            object : TunInterface {
+                override fun protect(fd: Int): Boolean = protect(fd)
+                override fun resolveUid(protocol: Int, source: String, target: String): Int = -1
+                override fun resolvePackage(uid: Int): String = ""
+            },
+            configuration,
+        )
+
     external fun updateDNS(
         dns: String,
     )

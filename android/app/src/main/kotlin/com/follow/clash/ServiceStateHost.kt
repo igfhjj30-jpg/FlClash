@@ -6,6 +6,7 @@ import android.net.VpnService
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.follow.clash.common.GlobalState
+import com.follow.clash.core.Core
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
 import com.follow.clash.plugins.TilePlugin
@@ -30,6 +31,8 @@ internal interface ServiceStateHost {
     fun showToast(message: String)
 
     fun setCrashlytics(enabled: Boolean)
+
+    fun setPacketTunnelMode(enabled: Boolean)
 
     fun updateNotificationParams(params: NotificationParams)
 
@@ -99,6 +102,8 @@ internal object AndroidServiceStateHost : ServiceStateHost {
     override fun showToast(message: String) = GlobalState.application.showToast(message)
 
     override fun setCrashlytics(enabled: Boolean) = GlobalState.setCrashlytics(enabled)
+
+    override fun setPacketTunnelMode(enabled: Boolean) = Core.setPacketTunnelMode(enabled)
 
     override fun updateNotificationParams(params: NotificationParams) =
         ServiceConfig.updateNotificationParams(params)

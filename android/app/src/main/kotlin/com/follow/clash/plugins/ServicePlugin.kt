@@ -1,5 +1,8 @@
 package com.follow.clash.plugins
 
+import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import com.follow.clash.ServiceController
 import com.follow.clash.ServiceState
 import com.follow.clash.common.Components
@@ -18,8 +21,10 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var scope: CoroutineScope
     private val gson = Gson()
+    private lateinit var context: Context
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        context = binding.applicationContext
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         channel = MethodChannel(binding.binaryMessenger, "${Components.PACKAGE_NAME}/service")
         channel.setMethodCallHandler(this)
@@ -44,6 +49,17 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             "syncState" -> syncState(call, result)
             "start" -> start(result)
             "stop" -> stop(result)
+            "packetTunnelStatus" -> scope.launch {
+                runCatching { ServiceController.getPacketTunnelStatus() }
+                    .onSuccess { result.success(it) }
+                    .onFailure { result.error("TUNNEL_STATUS", "Unable to read VPN status", null) }
+            }
+            "openVpnSettings" -> {
+                runCatching {
+                    context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }.onSuccess { result.success(true) }
+                    .onFailure { result.error("VPN_SETTINGS", "Unable to open VPN settings", null) }
+            }
             else -> result.notImplemented()
         }
     }

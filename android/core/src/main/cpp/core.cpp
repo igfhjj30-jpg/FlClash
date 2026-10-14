@@ -23,6 +23,27 @@ Java_com_follow_clash_core_Core_stopTun(JNIEnv *env, jobject thiz) {
 }
 
 extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_follow_clash_core_Core_startPacketTunnel(JNIEnv *env, jobject thiz, jint fd,
+                                                  jobject cb, jstring configuration) {
+    const auto interface = new_global(cb);
+    return startPacketTUN(interface, fd, get_string(configuration)) ? JNI_TRUE : JNI_FALSE;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_follow_clash_core_Core_getPacketTunnelStatus(JNIEnv *env, jobject thiz) {
+    scoped_string status = getPacketTunnelStatus();
+    return new_string(status);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_follow_clash_core_Core_setPacketTunnelMode(JNIEnv *env, jobject thiz, jboolean enabled) {
+    setPacketTunnelMode(enabled == JNI_TRUE);
+}
+
+extern "C"
 JNIEXPORT void JNICALL
 Java_com_follow_clash_core_Core_forceGC(JNIEnv *env, jobject thiz) {
     forceGC();

@@ -85,6 +85,17 @@ class Service {
     return await methodChannel.invokeMethod<bool>('stop') ?? false;
   }
 
+  Future<Map<String, Object?>> packetTunnelStatus() async {
+    final result = await methodChannel.invokeMapMethod<String, Object?>(
+      'packetTunnelStatus',
+    );
+    return result ?? const {'active': false};
+  }
+
+  Future<void> openVpnSettings() async {
+    await methodChannel.invokeMethod<bool>('openVpnSettings');
+  }
+
   Future<String> init() async {
     return await methodChannel.invokeMethod<String>('init') ?? '';
   }

@@ -863,6 +863,55 @@ class MessageLookup extends MessageLookupByLibrary {
     "overwriteTypeCustomDesc": MessageLookupByLibrary.simpleMessage(
       "カスタムモード：プロキシ、プロキシグループ、ルールを完全にカスタマイズできます",
     ),
+    "packetTunnelChooseTransport": MessageLookupByLibrary.simpleMessage(
+      "UDP 対応のプロキシノードを選択",
+    ),
+    "packetTunnelConfigureFirst": MessageLookupByLibrary.simpleMessage(
+      "先にトンネル設定を読み込み、転送用プロキシを選択してください。",
+    ),
+    "packetTunnelConnected": MessageLookupByLibrary.simpleMessage(
+      "WireGuard ハンドシェイク確認済み",
+    ),
+    "packetTunnelDashboard": MessageLookupByLibrary.simpleMessage(
+      "すべてのアプリが完全トンネルを使用します。転送用プロキシはネットワーク設定で選択します。",
+    ),
+    "packetTunnelDescription": MessageLookupByLibrary.simpleMessage(
+      "すべてのアプリの元の IP パケットを WireGuard で転送し、プロキシの振り分けルールは使用しません。切断時も VPN 経路を維持します。",
+    ),
+    "packetTunnelEnable": MessageLookupByLibrary.simpleMessage("完全トンネルを使用"),
+    "packetTunnelImportFile": MessageLookupByLibrary.simpleMessage(
+      "WireGuard 設定ファイルをインポート",
+    ),
+    "packetTunnelImportProfile": MessageLookupByLibrary.simpleMessage(
+      "現在のプロファイルから読み込む",
+    ),
+    "packetTunnelInvalid": MessageLookupByLibrary.simpleMessage(
+      "設定が無効です。ピアは 1 つ、インターフェースと DNS は IPv4、AllowedIPs は 0.0.0.0/0, ::/0 にしてください。",
+    ),
+    "packetTunnelIpv6": MessageLookupByLibrary.simpleMessage("IPv6 保護"),
+    "packetTunnelIpv6Description": MessageLookupByLibrary.simpleMessage(
+      "このモードでは IPv6 を取り込んでブロックします。IPv4 と DNS は完全トンネルを通ります。",
+    ),
+    "packetTunnelNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "設定がインポートされていません",
+    ),
+    "packetTunnelProtection": MessageLookupByLibrary.simpleMessage("システムの通信保護"),
+    "packetTunnelProtectionDescription": MessageLookupByLibrary.simpleMessage(
+      "ここからシステムの VPN 設定を開き、常時接続 VPN と VPN 外の接続ブロックを有効にすると、アプリ終了時やクラッシュ時も直接接続を防げます。",
+    ),
+    "packetTunnelProtectionEnabled": MessageLookupByLibrary.simpleMessage(
+      "常時接続 VPN と VPN 外の接続ブロックが有効です。",
+    ),
+    "packetTunnelStatus": MessageLookupByLibrary.simpleMessage("トンネルの状態"),
+    "packetTunnelStatusUnavailable": MessageLookupByLibrary.simpleMessage(
+      "VPN の状態を取得できません",
+    ),
+    "packetTunnelStopped": MessageLookupByLibrary.simpleMessage("完全トンネルは停止中です"),
+    "packetTunnelTitle": MessageLookupByLibrary.simpleMessage("完全トンネル"),
+    "packetTunnelTransport": MessageLookupByLibrary.simpleMessage("転送用プロキシ"),
+    "packetTunnelWaiting": MessageLookupByLibrary.simpleMessage(
+      "VPN は有効です。WireGuard ピアの応答を待機中",
+    ),
     "palette": MessageLookupByLibrary.simpleMessage("パレット"),
     "password": MessageLookupByLibrary.simpleMessage("パスワード"),
     "paste": MessageLookupByLibrary.simpleMessage("貼り付け"),

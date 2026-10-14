@@ -6447,6 +6447,216 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Complete tunnel`
+  String get packetTunnelTitle {
+    return Intl.message(
+      'Complete tunnel',
+      name: 'packetTunnelTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use complete tunnel`
+  String get packetTunnelEnable {
+    return Intl.message(
+      'Use complete tunnel',
+      name: 'packetTunnelEnable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send original IP packets for all apps through WireGuard, without proxy routing rules. An outage keeps VPN routes in place without changing the exit.`
+  String get packetTunnelDescription {
+    return Intl.message(
+      'Send original IP packets for all apps through WireGuard, without proxy routing rules. An outage keeps VPN routes in place without changing the exit.',
+      name: 'packetTunnelDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read tunnel from current profile`
+  String get packetTunnelImportProfile {
+    return Intl.message(
+      'Read tunnel from current profile',
+      name: 'packetTunnelImportProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import WireGuard configuration file`
+  String get packetTunnelImportFile {
+    return Intl.message(
+      'Import WireGuard configuration file',
+      name: 'packetTunnelImportFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No tunnel configuration imported`
+  String get packetTunnelNotConfigured {
+    return Intl.message(
+      'No tunnel configuration imported',
+      name: 'packetTunnelNotConfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transport proxy`
+  String get packetTunnelTransport {
+    return Intl.message(
+      'Transport proxy',
+      name: 'packetTunnelTransport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a concrete proxy that supports UDP`
+  String get packetTunnelChooseTransport {
+    return Intl.message(
+      'Choose a concrete proxy that supports UDP',
+      name: 'packetTunnelChooseTransport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import a complete tunnel configuration and select its transport proxy first.`
+  String get packetTunnelConfigureFirst {
+    return Intl.message(
+      'Import a complete tunnel configuration and select its transport proxy first.',
+      name: 'packetTunnelConfigureFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid tunnel configuration. Use one WireGuard peer, IPv4 interface and DNS addresses, and AllowedIPs 0.0.0.0/0, ::/0.`
+  String get packetTunnelInvalid {
+    return Intl.message(
+      'Invalid tunnel configuration. Use one WireGuard peer, IPv4 interface and DNS addresses, and AllowedIPs 0.0.0.0/0, ::/0.',
+      name: 'packetTunnelInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tunnel status`
+  String get packetTunnelStatus {
+    return Intl.message(
+      'Tunnel status',
+      name: 'packetTunnelStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WireGuard handshake confirmed`
+  String get packetTunnelConnected {
+    return Intl.message(
+      'WireGuard handshake confirmed',
+      name: 'packetTunnelConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VPN active, waiting for the WireGuard peer`
+  String get packetTunnelWaiting {
+    return Intl.message(
+      'VPN active, waiting for the WireGuard peer',
+      name: 'packetTunnelWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete tunnel is not running`
+  String get packetTunnelStopped {
+    return Intl.message(
+      'Complete tunnel is not running',
+      name: 'packetTunnelStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to read VPN status`
+  String get packetTunnelStatusUnavailable {
+    return Intl.message(
+      'Unable to read VPN status',
+      name: 'packetTunnelStatusUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System network protection`
+  String get packetTunnelProtection {
+    return Intl.message(
+      'System network protection',
+      name: 'packetTunnelProtection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Always-on VPN and blocking connections without VPN are enabled.`
+  String get packetTunnelProtectionEnabled {
+    return Intl.message(
+      'Always-on VPN and blocking connections without VPN are enabled.',
+      name: 'packetTunnelProtectionEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open system VPN settings and enable Always-on VPN and Block connections without VPN to also block traffic if the app exits or crashes.`
+  String get packetTunnelProtectionDescription {
+    return Intl.message(
+      'Open system VPN settings and enable Always-on VPN and Block connections without VPN to also block traffic if the app exits or crashes.',
+      name: 'packetTunnelProtectionDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv6 protection`
+  String get packetTunnelIpv6 {
+    return Intl.message(
+      'IPv6 protection',
+      name: 'packetTunnelIpv6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IPv6 is captured and blocked in this mode. IPv4 and DNS use the complete tunnel.`
+  String get packetTunnelIpv6Description {
+    return Intl.message(
+      'IPv6 is captured and blocked in this mode. IPv4 and DNS use the complete tunnel.',
+      name: 'packetTunnelIpv6Description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All apps use the complete tunnel. Choose its transport proxy in Network settings.`
+  String get packetTunnelDashboard {
+    return Intl.message(
+      'All apps use the complete tunnel. Choose its transport proxy in Network settings.',
+      name: 'packetTunnelDashboard',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

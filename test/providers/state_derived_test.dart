@@ -484,7 +484,10 @@ void main() {
         .update((_) => TunAuthorizationState.authorized);
     scoped
         .read(vpnSettingProvider.notifier)
-        .update((state) => state.copyWith(enable: true, systemProxy: true));
+        .update(
+          (state) =>
+              state.copyWith(enable: true, systemProxy: true, fullTunnel: true),
+        );
 
     scoped
         .read(appSettingProvider.notifier)
@@ -511,6 +514,8 @@ void main() {
     final vpnOptions = scoped.read(sharedStateProvider).vpnOptions!;
     expect(vpnOptions.enable, isFalse);
     expect(vpnOptions.systemProxy, isFalse);
+    expect(vpnOptions.fullTunnel, isFalse);
+    expect(vpnOptions.packetTunnel, isNull);
   });
 
   test('selection and delay providers resolve groups and profile state', () {
@@ -704,6 +709,30 @@ void main() {
       const AccessControlProps(),
     );
   });
+
+  test(
+    'complete tunnel forces VPN and disables proxy bypass options',
+    () async {
+      await AppLocalizations.load(const Locale('en'));
+      container.listen(sharedStateProvider, (_, _) {});
+      container
+          .read(vpnSettingProvider.notifier)
+          .update(
+            (state) => state.copyWith(
+              fullTunnel: true,
+              enable: false,
+              systemProxy: true,
+              allowBypass: true,
+            ),
+          );
+      final options = container.read(sharedStateProvider).vpnOptions!;
+      expect(options.enable, isTrue);
+      expect(options.fullTunnel, isTrue);
+      expect(options.systemProxy, isFalse);
+      expect(options.allowBypass, isFalse);
+      expect(options.packetTunnel, isNull);
+    },
+  );
 
   test('shared state hands the VPN service the resolved route list', () async {
     await AppLocalizations.load(const Locale('en'));

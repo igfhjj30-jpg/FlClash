@@ -4,6 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/icons/icons.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/dashboard/widget_metrics.dart';
@@ -34,6 +35,7 @@ void main() {
     required double width,
     required double unitHeight,
     double textScale = 1.0,
+    bool isAndroid = false,
   }) async {
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -53,7 +55,7 @@ void main() {
                       globalState.theme = CommonTheme.of(context, textScale);
                       return DashboardWidgetMetrics(
                         unitHeight: unitHeight,
-                        child: const OutboundMode(),
+                        child: OutboundMode(isAndroid: isAndroid),
                       );
                     },
                   ),
@@ -85,6 +87,33 @@ void main() {
             as ShapeDecoration;
     return decoration.color!;
   }
+
+  testWidgets('complete tunnel replaces proxy mode choices with its carrier', (
+    tester,
+  ) async {
+    container
+        .read(vpnSettingProvider.notifier)
+        .update(
+          (state) => state.copyWith(
+            fullTunnel: true,
+            packetTunnel: const PacketTunnelConfig(
+              privateKey: '',
+              publicKey: '',
+              endpoint: '192.0.2.1:51823',
+              addresses: ['10.0.0.2/32'],
+              dns: ['1.1.1.1'],
+              transportProxy: 'configured-carrier',
+            ),
+          ),
+        );
+    await pumpCard(tester, width: 280, unitHeight: 80, isAndroid: true);
+    await tester.pumpAndSettle();
+    expect(find.text('configured-carrier'), findsOneWidget);
+    for (final mode in Mode.values) {
+      expect(find.text(mode.label), findsNothing);
+    }
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('the phone-height card lists every mode on one line each', (
     tester,

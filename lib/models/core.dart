@@ -54,6 +54,8 @@ abstract class VpnOptions with _$VpnOptions {
     required List<String> bypassDomain,
     required String stack,
     @Default([]) List<String> routeAddress,
+    PacketTunnelConfig? packetTunnel,
+    @Default(false) bool fullTunnel,
   }) = _VpnOptions;
 
   factory VpnOptions.fromJson(Map<String, Object?> json) =>

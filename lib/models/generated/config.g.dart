@@ -200,6 +200,12 @@ Map<String, dynamic> _$WindowPropsToJson(_WindowProps instance) =>
     };
 
 _VpnProps _$VpnPropsFromJson(Map<String, dynamic> json) => _VpnProps(
+  fullTunnel: json['fullTunnel'] as bool? ?? false,
+  packetTunnel: json['packetTunnel'] == null
+      ? null
+      : PacketTunnelConfig.fromJson(
+          json['packetTunnel'] as Map<String, dynamic>,
+        ),
   enable: json['enable'] as bool? ?? true,
   systemProxy: json['systemProxy'] as bool? ?? true,
   ipv6: json['ipv6'] as bool? ?? false,
@@ -213,6 +219,8 @@ _VpnProps _$VpnPropsFromJson(Map<String, dynamic> json) => _VpnProps(
 );
 
 Map<String, dynamic> _$VpnPropsToJson(_VpnProps instance) => <String, dynamic>{
+  'fullTunnel': instance.fullTunnel,
+  'packetTunnel': instance.packetTunnel,
   'enable': instance.enable,
   'systemProxy': instance.systemProxy,
   'ipv6': instance.ipv6,

@@ -436,7 +436,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'cd63ddf147b8c303f8b1d9d8c397d87e8a14a6dd';
+String _$sharedStateHash() => r'a2e7087eca60788129c9d17bf7ad258efa48b31d';
 
 @ProviderFor(AccessControlState)
 final accessControlStateProvider = AccessControlStateProvider._();
@@ -529,7 +529,7 @@ final class SuspendProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$suspendHash() => r'9ab9210f4f3c70f63d9858d492a9c09b3fb24bf1';
+String _$suspendHash() => r'9d56175cdbef70d116588a34182316a9dd741b7e';
 
 @ProviderFor(DynamicColor)
 final dynamicColorProvider = DynamicColorProvider._();

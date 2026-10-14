@@ -1017,6 +1017,65 @@ class MessageLookup extends MessageLookupByLibrary {
     "overwriteTypeCustomDesc": MessageLookupByLibrary.simpleMessage(
       "Custom mode: fully customize proxies, proxy groups and rules",
     ),
+    "packetTunnelChooseTransport": MessageLookupByLibrary.simpleMessage(
+      "Choose a concrete proxy that supports UDP",
+    ),
+    "packetTunnelConfigureFirst": MessageLookupByLibrary.simpleMessage(
+      "Import a complete tunnel configuration and select its transport proxy first.",
+    ),
+    "packetTunnelConnected": MessageLookupByLibrary.simpleMessage(
+      "WireGuard handshake confirmed",
+    ),
+    "packetTunnelDashboard": MessageLookupByLibrary.simpleMessage(
+      "All apps use the complete tunnel. Choose its transport proxy in Network settings.",
+    ),
+    "packetTunnelDescription": MessageLookupByLibrary.simpleMessage(
+      "Send original IP packets for all apps through WireGuard, without proxy routing rules. An outage keeps VPN routes in place without changing the exit.",
+    ),
+    "packetTunnelEnable": MessageLookupByLibrary.simpleMessage(
+      "Use complete tunnel",
+    ),
+    "packetTunnelImportFile": MessageLookupByLibrary.simpleMessage(
+      "Import WireGuard configuration file",
+    ),
+    "packetTunnelImportProfile": MessageLookupByLibrary.simpleMessage(
+      "Read tunnel from current profile",
+    ),
+    "packetTunnelInvalid": MessageLookupByLibrary.simpleMessage(
+      "Invalid tunnel configuration. Use one WireGuard peer, IPv4 interface and DNS addresses, and AllowedIPs 0.0.0.0/0, ::/0.",
+    ),
+    "packetTunnelIpv6": MessageLookupByLibrary.simpleMessage("IPv6 protection"),
+    "packetTunnelIpv6Description": MessageLookupByLibrary.simpleMessage(
+      "IPv6 is captured and blocked in this mode. IPv4 and DNS use the complete tunnel.",
+    ),
+    "packetTunnelNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "No tunnel configuration imported",
+    ),
+    "packetTunnelProtection": MessageLookupByLibrary.simpleMessage(
+      "System network protection",
+    ),
+    "packetTunnelProtectionDescription": MessageLookupByLibrary.simpleMessage(
+      "Open system VPN settings and enable Always-on VPN and Block connections without VPN to also block traffic if the app exits or crashes.",
+    ),
+    "packetTunnelProtectionEnabled": MessageLookupByLibrary.simpleMessage(
+      "Always-on VPN and blocking connections without VPN are enabled.",
+    ),
+    "packetTunnelStatus": MessageLookupByLibrary.simpleMessage("Tunnel status"),
+    "packetTunnelStatusUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Unable to read VPN status",
+    ),
+    "packetTunnelStopped": MessageLookupByLibrary.simpleMessage(
+      "Complete tunnel is not running",
+    ),
+    "packetTunnelTitle": MessageLookupByLibrary.simpleMessage(
+      "Complete tunnel",
+    ),
+    "packetTunnelTransport": MessageLookupByLibrary.simpleMessage(
+      "Transport proxy",
+    ),
+    "packetTunnelWaiting": MessageLookupByLibrary.simpleMessage(
+      "VPN active, waiting for the WireGuard peer",
+    ),
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),

@@ -23,7 +23,9 @@ const _selectDuration = Duration(milliseconds: 320);
 const _selectCurve = Curves.easeInOutCubic;
 
 class OutboundMode extends ConsumerWidget {
-  const OutboundMode({super.key});
+  const OutboundMode({super.key, this.isAndroid});
+
+  final bool? isAndroid;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +34,48 @@ class OutboundMode extends ConsumerWidget {
     );
     final inset = DashboardWidgetMetrics.insetOf(context);
     final radius = DashboardWidgetMetrics.radiusOf(context);
+    final fullTunnel =
+        (isAndroid ?? system.isAndroid) &&
+        ref.watch(vpnSettingProvider.select((state) => state.fullTunnel));
+    if (fullTunnel) {
+      final carrier = ref.watch(
+        vpnSettingProvider.select(
+          (state) => state.packetTunnel?.transportProxy,
+        ),
+      );
+      return SizedBox(
+        height: DashboardWidgetMetrics.heightOf(context, 2),
+        child: CommonCard(
+          radius: radius,
+          infoPadding: DashboardWidgetMetrics.paddingOf(context),
+          info: Info(
+            label: context.appLocalizations.packetTunnelTitle,
+            glyph: AppGlyphs.split,
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(inset),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  carrier ?? context.appLocalizations.packetTunnelNotConfigured,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.appLocalizations.packetTunnelDashboard,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     final pillInset = min(_pillInset.mAp, inset);
     return SizedBox(
       height: DashboardWidgetMetrics.heightOf(context, 2),

@@ -226,6 +226,8 @@ extension WindowPropsExt on WindowProps {
 @freezed
 abstract class VpnProps with _$VpnProps {
   const factory VpnProps({
+    @Default(false) bool fullTunnel,
+    PacketTunnelConfig? packetTunnel,
     @Default(true) bool enable,
     @Default(true) bool systemProxy,
     @Default(false) bool ipv6,

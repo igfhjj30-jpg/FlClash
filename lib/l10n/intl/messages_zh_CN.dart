@@ -774,6 +774,55 @@ class MessageLookup extends MessageLookupByLibrary {
     "overwriteTypeCustomDesc": MessageLookupByLibrary.simpleMessage(
       "自定义模式，支持完全自定义修改代理、策略组以及规则",
     ),
+    "packetTunnelChooseTransport": MessageLookupByLibrary.simpleMessage(
+      "请选择支持 UDP 的具体代理节点",
+    ),
+    "packetTunnelConfigureFirst": MessageLookupByLibrary.simpleMessage(
+      "请先导入完整隧道配置并选择前置代理。",
+    ),
+    "packetTunnelConnected": MessageLookupByLibrary.simpleMessage(
+      "已确认 WireGuard 握手",
+    ),
+    "packetTunnelDashboard": MessageLookupByLibrary.simpleMessage(
+      "所有应用通过完整隧道。前置节点在网络设置中选择。",
+    ),
+    "packetTunnelDescription": MessageLookupByLibrary.simpleMessage(
+      "所有应用的原始 IP 包通过 WireGuard 转发，不使用代理分流规则。连接中断时保留 VPN 路由，不自动切换出口。",
+    ),
+    "packetTunnelEnable": MessageLookupByLibrary.simpleMessage("使用完整隧道"),
+    "packetTunnelImportFile": MessageLookupByLibrary.simpleMessage(
+      "导入 WireGuard 配置文件",
+    ),
+    "packetTunnelImportProfile": MessageLookupByLibrary.simpleMessage(
+      "从当前订阅读取隧道配置",
+    ),
+    "packetTunnelInvalid": MessageLookupByLibrary.simpleMessage(
+      "隧道配置无效。需要一个 WireGuard 对端、IPv4 接口和 DNS 地址，AllowedIPs 必须为 0.0.0.0/0, ::/0。",
+    ),
+    "packetTunnelIpv6": MessageLookupByLibrary.simpleMessage("IPv6 保护"),
+    "packetTunnelIpv6Description": MessageLookupByLibrary.simpleMessage(
+      "此模式接管并阻断 IPv6，IPv4 和 DNS 通过完整隧道。",
+    ),
+    "packetTunnelNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "尚未导入隧道配置",
+    ),
+    "packetTunnelProtection": MessageLookupByLibrary.simpleMessage("系统断网保护"),
+    "packetTunnelProtectionDescription": MessageLookupByLibrary.simpleMessage(
+      "点此打开系统 VPN 设置，开启“始终开启的 VPN”和“阻止未使用 VPN 的连接”，以便应用退出或崩溃时也阻止直连。",
+    ),
+    "packetTunnelProtectionEnabled": MessageLookupByLibrary.simpleMessage(
+      "已开启始终开启的 VPN 和阻止未使用 VPN 的连接。",
+    ),
+    "packetTunnelStatus": MessageLookupByLibrary.simpleMessage("隧道状态"),
+    "packetTunnelStatusUnavailable": MessageLookupByLibrary.simpleMessage(
+      "暂时无法读取 VPN 状态",
+    ),
+    "packetTunnelStopped": MessageLookupByLibrary.simpleMessage("完整隧道未运行"),
+    "packetTunnelTitle": MessageLookupByLibrary.simpleMessage("完整隧道"),
+    "packetTunnelTransport": MessageLookupByLibrary.simpleMessage("前置代理"),
+    "packetTunnelWaiting": MessageLookupByLibrary.simpleMessage(
+      "VPN 已启用，等待 WireGuard 对端响应",
+    ),
     "palette": MessageLookupByLibrary.simpleMessage("调色板"),
     "password": MessageLookupByLibrary.simpleMessage("密码"),
     "paste": MessageLookupByLibrary.simpleMessage("粘贴"),

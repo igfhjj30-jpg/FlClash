@@ -183,6 +183,7 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
     }
 
     private fun applySharedState() {
+        host.setPacketTunnelMode(sharedState.vpnOptions?.fullTunnel == true)
         host.setCrashlytics(sharedState.crashlytics)
         host.updateNotificationParams(notificationParams(sharedState))
     }
@@ -227,7 +228,9 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
         if (!isCurrent(request)) {
             return false
         }
-        val options = sharedState.vpnOptions
+        val options = sharedState.vpnOptions?.let {
+            if (it.fullTunnel && !it.enable) it.copy(enable = true) else it
+        }
         if (options == null) {
             fail(request)
             return false
@@ -268,7 +271,7 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
 
     // system/mixed hand TCP to the kernel via the tun subnet, which Android 17 gates as local network.
     private fun withLocalNetworkFallback(options: VpnOptions): VpnOptions {
-        if (!options.enable || options.stack !in KERNEL_TCP_STACKS ||
+        if (options.fullTunnel || !options.enable || options.stack !in KERNEL_TCP_STACKS ||
             host.isLocalNetworkPermissionGranted()
         ) {
             return options

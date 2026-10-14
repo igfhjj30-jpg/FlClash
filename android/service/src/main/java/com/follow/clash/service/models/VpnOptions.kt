@@ -23,6 +23,8 @@ data class VpnOptions(
     val bypassDomain: List<String>,
     val stack: String,
     val routeAddress: List<String>,
+    val packetTunnel: PacketTunnelOptions? = null,
+    val fullTunnel: Boolean = false,
 )
 
 data class CIDR(

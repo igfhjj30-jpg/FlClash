@@ -135,6 +135,10 @@ func sideUpdateExternalProvider(p cp.Provider, data []byte) error {
 }
 
 func updateListeners(cfg *config.Config) {
+	if packetTunnelMode.Load() || activePacketTunnel.Load() != nil {
+		listener.StopListener()
+		return
+	}
 	if cfg == nil || !isRunning.Load() {
 		return
 	}

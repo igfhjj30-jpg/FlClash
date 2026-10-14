@@ -47,13 +47,24 @@ type probeRoute struct {
 // of the most recent one, which after redirects is the one that produced the
 // final response.
 type probeDialer struct {
-	proxy constant.Proxy
+	proxy  constant.Proxy
+	packet *packetTunnel
 
 	mu   sync.Mutex
 	last *routedConn
 }
 
 func (d *probeDialer) dial(ctx context.Context, _ string, address string) (net.Conn, error) {
+	if d.packet != nil {
+		if d.packet.closed.Load() || activePacketTunnel.Load() != d.packet {
+			return nil, errors.New("complete tunnel is no longer active")
+		}
+		conn, err := d.packet.dialProbe(ctx, address)
+		if err == nil {
+			d.remember(&routedConn{route: &probeRoute{chains: []string{"WireGuard"}}})
+		}
+		return conn, err
+	}
 	metadata := &constant.Metadata{
 		NetWork: constant.TCP,
 		Type:    constant.INNER,
@@ -204,8 +215,11 @@ func runProbe(parent context.Context, req probeRequest) *ProbeResult {
 		return result
 	}
 
-	dialer := &probeDialer{}
-	if req.proxyName != "" {
+	dialer := &probeDialer{packet: activePacketTunnel.Load()}
+	if packetTunnelMode.Load() && dialer.packet == nil {
+		return fail(errors.New("complete tunnel is not active"))
+	}
+	if req.proxyName != "" && dialer.packet == nil {
 		dialer.proxy = lookupProxy(req.proxyName)
 		if dialer.proxy == nil {
 			return fail(fmt.Errorf("proxy %q is not part of the applied config", req.proxyName))
@@ -230,6 +244,10 @@ func runProbe(parent context.Context, req probeRequest) *ProbeResult {
 
 	ctx, cancel := context.WithTimeout(parent, timeout)
 	defer cancel()
+	if dialer.packet != nil {
+		stop := context.AfterFunc(dialer.packet.ctx, cancel)
+		defer stop()
+	}
 
 	var body io.Reader
 	if len(req.body) > 0 {

@@ -5,5 +5,6 @@ export 'common.dart';
 export 'config.dart';
 export 'core.dart';
 export 'ip_quality.dart';
+export 'packet_tunnel.dart';
 export 'profile.dart';
 export 'state.dart';

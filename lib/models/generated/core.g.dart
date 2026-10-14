@@ -111,6 +111,12 @@ _VpnOptions _$VpnOptionsFromJson(Map<String, dynamic> json) => _VpnOptions(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  packetTunnel: json['packetTunnel'] == null
+      ? null
+      : PacketTunnelConfig.fromJson(
+          json['packetTunnel'] as Map<String, dynamic>,
+        ),
+  fullTunnel: json['fullTunnel'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$VpnOptionsToJson(_VpnOptions instance) =>
@@ -125,6 +131,8 @@ Map<String, dynamic> _$VpnOptionsToJson(_VpnOptions instance) =>
       'bypassDomain': instance.bypassDomain,
       'stack': instance.stack,
       'routeAddress': instance.routeAddress,
+      'packetTunnel': instance.packetTunnel,
+      'fullTunnel': instance.fullTunnel,
     };
 
 _InitParams _$InitParamsFromJson(Map<String, dynamic> json) => _InitParams(

@@ -139,6 +139,13 @@ object ServiceController {
 
     fun getRunTimeMillis(): Long = runTimeMillis
 
+    suspend fun getPacketTunnelStatus(): Map<String, Any?> = lock.withLock {
+        if (runTimeMillis == 0L) return@withLock mapOf("active" to false)
+        binding?.useService { service ->
+            (service as? VpnService)?.packetTunnelStatus() ?: mapOf("active" to false)
+        }?.getOrDefault(mapOf("active" to false)) ?: mapOf("active" to false)
+    }
+
     private fun handleServiceDisconnected(
         disconnectedBinding: ManagedServiceBinding,
         message: String,

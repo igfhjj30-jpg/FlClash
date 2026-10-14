@@ -9,6 +9,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' show dirname, join;
 
+import 'packet_tunnel.dart';
+
 typedef _VpnUpdate<T> = VpnProps Function(VpnProps state, T value);
 
 typedef _NetworkUpdate<T> = NetworkProps Function(NetworkProps state, T value);
@@ -326,24 +328,29 @@ List<Widget> networkOptionsItems({
   ];
 }
 
-class VpnSections extends StatelessWidget {
+class VpnSections extends ConsumerWidget {
   const VpnSections({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fullTunnel = ref.watch(
+      vpnSettingProvider.select((state) => state.fullTunnel),
+    );
     return Column(
       children: [
-        generateSectionV3(items: const [VPNItem()]),
-        generateSectionV3(
-          title: 'VPN',
-          items: const [
-            VpnSystemProxyItem(),
-            BypassDomainItem(),
-            AllowBypassItem(),
-            Ipv6Item(),
-            DNSHijackingItem(),
-          ],
-        ),
+        if (!fullTunnel) generateSectionV3(items: const [VPNItem()]),
+        const PacketTunnelSection(),
+        if (!fullTunnel)
+          generateSectionV3(
+            title: 'VPN',
+            items: const [
+              VpnSystemProxyItem(),
+              BypassDomainItem(),
+              AllowBypassItem(),
+              Ipv6Item(),
+              DNSHijackingItem(),
+            ],
+          ),
       ],
     );
   }
@@ -370,6 +377,10 @@ class NetworkOptionsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (system.isAndroid &&
+        ref.watch(vpnSettingProvider.select((state) => state.fullTunnel))) {
+      return const SizedBox.shrink();
+    }
     final isCustomInterfaceName = ref.watch(
       patchClashConfigProvider.select(
         (state) => state.interfaceNameMode == InterfaceNameMode.custom,

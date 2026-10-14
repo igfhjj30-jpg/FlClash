@@ -225,20 +225,27 @@ SharedState sharedState(Ref ref) {
     localNetworkTip: currentAppLocalizations.localNetworkDeniedTip,
     setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
     vpnOptions: VpnOptions(
-      enable: vpnSetting.enable && !safeMode,
+      enable: (vpnSetting.enable || vpnSetting.fullTunnel) && !safeMode,
       stack: stack,
       // VpnService.setHttpProxy cannot carry credentials, so an authenticated
       // mixed port must not be declared as the system HTTP proxy; traffic
       // still flows through TUN.
       systemProxy:
-          vpnSetting.systemProxy && !networkSetting.authenticated && !safeMode,
+          vpnSetting.systemProxy &&
+          !vpnSetting.fullTunnel &&
+          !networkSetting.authenticated &&
+          !safeMode,
       port: port,
       ipv6: vpnSetting.ipv6,
       dnsHijacking: vpnSetting.dnsHijacking,
       accessControlProps: vpnSetting.accessControlProps,
-      allowBypass: vpnSetting.allowBypass,
+      allowBypass: vpnSetting.allowBypass && !vpnSetting.fullTunnel,
       bypassDomain: networkSetting.bypassDomain,
       routeAddress: clashConfig.routeAddress,
+      packetTunnel: vpnSetting.fullTunnel && !safeMode
+          ? vpnSetting.packetTunnel
+          : null,
+      fullTunnel: vpnSetting.fullTunnel && !safeMode,
     ),
   );
 }
@@ -252,6 +259,10 @@ class AccessControlState extends _$AccessControlState
 
 @riverpod
 bool suspend(Ref ref) {
+  if (system.isAndroid &&
+      ref.watch(vpnSettingProvider.select((state) => state.fullTunnel))) {
+    return false;
+  }
   final currentSSID = ref.watch(currentSSIDProvider);
   final excludeSSIDs = ref.watch(excludeSSIDsProvider);
   return excludeSSIDs.contains(currentSSID);

@@ -15,12 +15,14 @@ import com.follow.clash.common.R as CommonR
 import com.follow.clash.core.Core
 import com.follow.clash.service.models.CIDR
 import com.follow.clash.service.models.VpnOptions
+import com.follow.clash.service.models.PacketTunnelOptions
 import com.follow.clash.service.models.getIpv4RouteAddress
 import com.follow.clash.service.models.getIpv6RouteAddress
 import com.follow.clash.service.models.toCIDR
 import com.follow.clash.service.modules.ServiceModules
 import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap
+import com.google.gson.Gson
 import android.net.VpnService as SystemVpnService
 
 class VpnService : SystemVpnService(), ManagedService {
@@ -117,6 +119,10 @@ class VpnService : SystemVpnService(), ManagedService {
     }
 
     private fun handleStart(options: VpnOptions) {
+        if (options.fullTunnel) {
+            handlePacketStart(requireNotNull(options.packetTunnel) { "Complete tunnel configuration is missing" })
+            return
+        }
         val fd = with(Builder()) {
             addAddressAndRoutes(options)
             addDnsServers(options)
@@ -162,6 +168,35 @@ class VpnService : SystemVpnService(), ManagedService {
                         dns = options.tunDns,
                     ),
                 ) { "Core rejected the tun file descriptor" }
+            } catch (error: Exception) {
+                stopTunLocked()
+                throw error
+            }
+        }
+    }
+
+    private fun handlePacketStart(options: PacketTunnelOptions) {
+        options.validate()
+        val fd = with(Builder()) {
+            options.addresses.map(String::toCIDR).forEach {
+                addAddress(it.address, it.prefixLength)
+            }
+            addAddress("fdfe:dcba:9876::1", 128)
+            addRoute(NET_ANY, 0)
+            addRoute(NET_ANY6, 0)
+            options.dns.forEach(::addDnsServer)
+            setMtu(options.mtu)
+            setSession(getString(CommonR.string.app_name))
+            setBlocking(false)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) setMetered(false)
+            establish()?.detachFd() ?: error("VPN establishment was rejected by the system")
+        }
+        synchronized(tunLock) {
+            tunRunning = true
+            try {
+                check(Core.startPacketTunnel(fd, this::protect, Gson().toJson(options))) {
+                    "Unable to initialize the complete tunnel"
+                }
             } catch (error: Exception) {
                 stopTunLocked()
                 throw error
@@ -282,6 +317,14 @@ class VpnService : SystemVpnService(), ManagedService {
             Core.stopTun()
             tunRunning = false
         }
+    }
+
+    fun packetTunnelStatus(): Map<String, Any?> {
+        val state = Gson().fromJson(Core.getPacketTunnelStatus(), Map::class.java)
+            .entries.associate { it.key.toString() to it.value }.toMutableMap()
+        state["alwaysOn"] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isAlwaysOn else null
+        state["lockdown"] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isLockdownEnabled else null
+        return state
     }
 
     companion object {

@@ -71,6 +71,18 @@ func TestHandleProbePinsTheNamedProxy(t *testing.T) {
 	}
 }
 
+func TestPacketTunnelProbeCannotUseDirectBeforeVPNStarts(t *testing.T) {
+	previous := packetTunnelMode.Swap(true)
+	t.Cleanup(func() { packetTunnelMode.Store(previous) })
+	var reached atomic.Bool
+	server := probeServer(t, func(http.ResponseWriter, *http.Request) { reached.Store(true) })
+	withProbeProxies(t, "DIRECT")
+	result := handleProbe(&ProbeParams{Url: server.URL, ProxyName: "DIRECT", Timeout: 1000})
+	if result.Error == "" || reached.Load() {
+		t.Fatal("inactive full tunnel reported a direct exit address")
+	}
+}
+
 func TestHandleProbeFollowsRedirectsAndCapsTheBody(t *testing.T) {
 	server := probeServer(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {

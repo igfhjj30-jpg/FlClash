@@ -92,6 +92,11 @@ private class FakeApp(
 }
 
 private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
+    var packetMode = false
+
+    override fun setPacketTunnelMode(enabled: Boolean) {
+        packetMode = enabled
+    }
     var storedSharedState = configuredState()
     var setupResult: Result<String> = Result.success("")
     var startResult = 1_700_000_000_000L
@@ -289,6 +294,37 @@ class ServiceStateMachineTest {
 
         assertTrue(machine.requestStart().await())
         assertEquals(1, host.startCalls)
+    }
+
+    @Test
+    fun `complete tunnel requires VPN even when proxy-only was stored`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.localNetworkPermissionGranted = false
+        val machine = ServiceStateMachine(host)
+        machine.syncSharedState(configuredState().copy(
+            vpnOptions = vpnOptions(enable = false, stack = "system").copy(fullTunnel = true),
+        ))
+
+        assertTrue(machine.requestStart().await())
+        assertEquals(true, host.lastStartOptions?.enable)
+        assertEquals(true, host.lastStartOptions?.fullTunnel)
+        assertEquals("system", host.lastStartOptions?.stack)
+        assertFalse(host.toasts.contains(configuredState().localNetworkTip))
+    }
+
+    @Test
+    fun `stored full tunnel mode guards probes before the VPN starts`() = runTest {
+        val host = FakeHost(backgroundScope)
+        val machine = ServiceStateMachine(host)
+        machine.syncSharedState(configuredState().copy(
+            vpnOptions = vpnOptions().copy(fullTunnel = true),
+        ))
+
+        assertTrue(host.packetMode)
+        assertEquals(0, host.startCalls)
+        assertEquals(RunState.STOPPED, machine.runState.value)
+        machine.syncSharedState(configuredState())
+        assertFalse(host.packetMode)
     }
 
     /** Android 17 drops the kernel hop system/mixed rely on until the permission is granted. */

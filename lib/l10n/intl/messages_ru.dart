@@ -1066,6 +1066,65 @@ class MessageLookup extends MessageLookupByLibrary {
     "overwriteTypeCustomDesc": MessageLookupByLibrary.simpleMessage(
       "Пользовательский режим: полная настройка прокси, групп прокси и правил",
     ),
+    "packetTunnelChooseTransport": MessageLookupByLibrary.simpleMessage(
+      "Выберите отдельный прокси с поддержкой UDP",
+    ),
+    "packetTunnelConfigureFirst": MessageLookupByLibrary.simpleMessage(
+      "Сначала импортируйте конфигурацию и выберите транспортный прокси.",
+    ),
+    "packetTunnelConnected": MessageLookupByLibrary.simpleMessage(
+      "Рукопожатие WireGuard подтверждено",
+    ),
+    "packetTunnelDashboard": MessageLookupByLibrary.simpleMessage(
+      "Все приложения используют полный туннель. Транспортный прокси выбирается в настройках сети.",
+    ),
+    "packetTunnelDescription": MessageLookupByLibrary.simpleMessage(
+      "Исходные IP-пакеты всех приложений передаются через WireGuard без правил прокси. При сбое маршруты VPN сохраняются, выход не меняется.",
+    ),
+    "packetTunnelEnable": MessageLookupByLibrary.simpleMessage(
+      "Использовать полный туннель",
+    ),
+    "packetTunnelImportFile": MessageLookupByLibrary.simpleMessage(
+      "Импортировать конфигурацию WireGuard",
+    ),
+    "packetTunnelImportProfile": MessageLookupByLibrary.simpleMessage(
+      "Загрузить туннель из текущего профиля",
+    ),
+    "packetTunnelInvalid": MessageLookupByLibrary.simpleMessage(
+      "Недопустимая конфигурация. Нужен один пир WireGuard, IPv4-адреса интерфейса и DNS, AllowedIPs 0.0.0.0/0, ::/0.",
+    ),
+    "packetTunnelIpv6": MessageLookupByLibrary.simpleMessage("Защита IPv6"),
+    "packetTunnelIpv6Description": MessageLookupByLibrary.simpleMessage(
+      "В этом режиме IPv6 перехватывается и блокируется. IPv4 и DNS проходят через полный туннель.",
+    ),
+    "packetTunnelNotConfigured": MessageLookupByLibrary.simpleMessage(
+      "Конфигурация туннеля не импортирована",
+    ),
+    "packetTunnelProtection": MessageLookupByLibrary.simpleMessage(
+      "Системная блокировка соединений",
+    ),
+    "packetTunnelProtectionDescription": MessageLookupByLibrary.simpleMessage(
+      "Откройте настройки VPN и включите постоянный VPN и блокировку соединений без VPN, чтобы прямой трафик блокировался также при закрытии или сбое приложения.",
+    ),
+    "packetTunnelProtectionEnabled": MessageLookupByLibrary.simpleMessage(
+      "Постоянный VPN и блокировка соединений без VPN включены.",
+    ),
+    "packetTunnelStatus": MessageLookupByLibrary.simpleMessage(
+      "Состояние туннеля",
+    ),
+    "packetTunnelStatusUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Не удалось получить состояние VPN",
+    ),
+    "packetTunnelStopped": MessageLookupByLibrary.simpleMessage(
+      "Полный туннель не запущен",
+    ),
+    "packetTunnelTitle": MessageLookupByLibrary.simpleMessage("Полный туннель"),
+    "packetTunnelTransport": MessageLookupByLibrary.simpleMessage(
+      "Транспортный прокси",
+    ),
+    "packetTunnelWaiting": MessageLookupByLibrary.simpleMessage(
+      "VPN активен, ожидание ответа пира WireGuard",
+    ),
     "palette": MessageLookupByLibrary.simpleMessage("Палитра"),
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
     "paste": MessageLookupByLibrary.simpleMessage("Вставить"),
